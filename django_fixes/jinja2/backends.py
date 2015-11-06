@@ -106,6 +106,4 @@ def environment(**options):
         'static':staticfiles_storage.url,
         'url':url,
     })
-    # import djangoUtils.messages.jinja2
-    # djangoUtils.messages.jinja2.register(env)
     return env
