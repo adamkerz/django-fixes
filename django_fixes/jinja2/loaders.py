@@ -29,10 +29,10 @@ class Jinja2AppSpecificLoader(Jinja2BaseLoader):
     
     A quick example:
     >>> loader = Jinja2AppSpecificLoader(['/path/to/django/website/templates'],['/path/to/django/website/apps/user/templates'])
-    >>> loader.get_source(env,'user:list.jinja')
+    >>> loader.get_source(env,'user:list.jinja2')
 
     will return the template if it is found at:
-    /path/to/django/website/apps/user/templates/list.jinja
+    /path/to/django/website/apps/user/templates/list.jinja2
     """
     def __init__(self,dirs,app_dirs,app_dirname='templates',encoding='utf-8'):
         self.dirs=dirs
