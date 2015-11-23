@@ -36,6 +36,7 @@ class Jinja2Backend(DjangoJinja2Backend):
 
     def __init__(self,params):
         params=params.copy()
+        # OPTIONS are passed as kwargs to the Environment class
         params['OPTIONS']=params.pop('OPTIONS').copy()
         # set our default loader, if not explicitly overridden by the user
         if 'loader' not in params['OPTIONS']:
@@ -47,6 +48,9 @@ class Jinja2Backend(DjangoJinja2Backend):
         params['OPTIONS'].setdefault('extensions',self._default_extensions)
         # pop context_processors because jinja2 doesn't know about them, we run them before handing off to jinja2
         self.context_processors=params['OPTIONS'].pop('context_processors',[])
+        # import globals
+        gs=params['OPTIONS'].pop('globals',{})
+        params['OPTIONS']['globals']={n:import_string(g) for n,g in gs.items()}
         super(self.__class__,self).__init__(params)
 
 
@@ -101,9 +105,14 @@ def url(name,*args,**kwargs):
 def environment(**options):
     from django.contrib.staticfiles.storage import staticfiles_storage
 
+    # globals aren't accepted as a parameter to Environment
+    gs=options.pop('globals',{})
     env=jinja2.Environment(**options)
+    # standard replacements for django template language functions
     env.globals.update({
         'static':staticfiles_storage.url,
         'url':url,
     })
+    # and any user specified globals
+    env.globals.update(gs)
     return env
