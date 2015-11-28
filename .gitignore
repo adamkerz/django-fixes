@@ -1,2 +1,6 @@
 __pycache__/
 *.py[cod]
+
+build/
+dist/
+django_fixes.egg-info/
