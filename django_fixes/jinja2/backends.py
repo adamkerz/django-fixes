@@ -43,7 +43,7 @@ class Jinja2Backend(DjangoJinja2Backend):
             from .loaders import Jinja2AppSpecificLoader
             dirs=params['DIRS']
             app_dirs=get_app_template_dirs(self.app_dirname) if bool(params['APP_DIRS']) else ()
-            params['OPTIONS']['loader']=Jinja2AppSpecificLoader(dirs,app_dirs,app_dirname=self.app_dirname)
+            params['OPTIONS']['loader']=Jinja2AppSpecificLoader(dirs,app_dirs,app_dirname=self.app_dirname,only_match_filename_extensions=params['OPTIONS'].get('only_match_filename_extensions',None))
         params['OPTIONS'].setdefault('undefined',jinja2.Undefined)
         params['OPTIONS'].setdefault('extensions',self._default_extensions)
         # pop context_processors because jinja2 doesn't know about them, we run them before handing off to jinja2
@@ -107,6 +107,7 @@ def environment(**options):
 
     # globals aren't accepted as a parameter to Environment
     gs=options.pop('globals',{})
+    options.pop('only_match_filename_extensions',None)
     env=jinja2.Environment(**options)
     # standard replacements for django template language functions
     env.globals.update({

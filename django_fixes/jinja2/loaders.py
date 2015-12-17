@@ -34,14 +34,17 @@ class Jinja2AppSpecificLoader(Jinja2BaseLoader):
     will return the template if it is found at:
     /path/to/django/website/apps/user/templates/list.jinja2
     """
-    def __init__(self,dirs,app_dirs,app_dirname='templates',encoding='utf-8'):
+    def __init__(self,dirs,app_dirs,app_dirname='templates',encoding='utf-8',only_match_filename_extensions=None):
         self.dirs=dirs
         self.app_dirs=app_dirs
         self.app_dirname=app_dirname
         self.encoding=encoding
+        self.only_match_filename_extensions=only_match_filename_extensions
 
 
     def list_specific_templates(self,template):
+        # return an empty list straight away if the template path doesn't end in one of our defined extensions 
+        if self.only_match_filename_extensions and not any(template.endswith('.'+ext) for ext in self.only_match_filename_extensions): return []
         # split the template string into appName and templatePath
         t=template if ':' in template else ':'+template
         app_name,template_path=t.split(':',1)
